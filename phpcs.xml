@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset name="Mikk3lRo">
+    <file>src</file>
+    
+    <rule ref="./vendor/mikk3lro/coding-standards/rulesets/production.xml"/>
+    <rule ref="./vendor/mikk3lro/coding-standards/rulesets/functionAndVariableComments.xml"/>
+</ruleset>
