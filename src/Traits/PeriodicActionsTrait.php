@@ -43,10 +43,10 @@ trait PeriodicActionsTrait
     protected function doPeriodicActions() : void
     {
         $looptime = microtime(true);
-        foreach ($this->periodicActions as $periodicAction) {
-            if ($looptime >= $periodicAction['lastRun'] + $periodicAction['interval']) {
-                $periodicAction['lastRun'] = $looptime;
-                call_user_func($periodicAction['callable']);
+        foreach ($this->periodicActions as $actionId => $action) {
+            if ($looptime >= $action['lastRun'] + $action['interval']) {
+                $this->periodicActions[$actionId]['lastRun'] = $looptime;
+                call_user_func($action['callable']);
             }
         }
     }
