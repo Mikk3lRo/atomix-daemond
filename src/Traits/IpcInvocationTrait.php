@@ -54,7 +54,7 @@ trait IpcInvocationTrait
             }
             foreach (glob($this->ipcFilename . '.*') as $responseFile) {
                 $this->logger->warning("IPC response file from previous process found - and deleted...");
-                unlink($this->responseFile);
+                unlink($responseFile);
             }
         }
     }
