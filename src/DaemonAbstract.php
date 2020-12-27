@@ -5,6 +5,7 @@ namespace Mikk3lRo\atomix\daemond;
 use Exception;
 use Mikk3lRo\atomix\daemond\Traits\CliInvocationTrait;
 use Mikk3lRo\atomix\daemond\Traits\IpcInvocationTrait;
+use Mikk3lRo\atomix\daemond\Traits\PeriodicActionsTrait;
 use Mikk3lRo\atomix\daemond\Traits\SystemServiceTrait;
 use Mikk3lRo\atomix\utilities\CLI;
 use Mikk3lRo\atomix\utilities\Processes;
@@ -16,6 +17,7 @@ abstract class DaemonAbstract implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
     use SystemServiceTrait;
+    use PeriodicActionsTrait;
     use CliInvocationTrait;
     use IpcInvocationTrait;
 
@@ -40,13 +42,6 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      * @var integer
      */
     public $version = null;
-
-    /**
-     * Keeps track of last version check time.
-     *
-     * @var integer
-     */
-    private $lastVersionCheck = 0;
 
     /**
      * Keeps track of the previous loop's start time to ensure a reasonable
@@ -153,6 +148,15 @@ abstract class DaemonAbstract implements LoggerAwareInterface
         pcntl_signal(SIGHUP, array($this, "sigHandler"));
         pcntl_signal(SIGUSR1, array($this, "sigHandler"));
         pcntl_signal(SIGUSR2, array($this, "sigHandler"));
+
+
+        //Check for new versions periodically
+        $this->addPeriodicAction(function () {
+            $this->setStatus('Checking for new version of daemon...');
+            if ($this->hasNewVersion()) {
+                $this->restart();
+            }
+        }, $this->versionCheckInterval);
     }
 
 
@@ -190,8 +194,6 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      */
     protected function getVersion() : int
     {
-        $this->lastVersionCheck = microtime(true);
-
         //Make sure we get up-to-date results
         clearstatcache();
 
@@ -454,14 +456,8 @@ abstract class DaemonAbstract implements LoggerAwareInterface
         $this->setStatus('Executing daemon loop ' . $this->numberOfLoops . '...');
         $this->eternalLoop();
 
-        //Check for new versions after each loop, but only if
-        //version_check_interval has passed since last check
-        if (microtime(true) >= $this->lastVersionCheck + $this->versionCheckInterval) {
-            $this->setStatus('Checking for new version of daemon...');
-            if ($this->hasNewVersion()) {
-                $this->restart();
-            }
-        }
+        //Do stuff that needs to run with a certain interval
+        $this->doPeriodicActions();
 
         $this->numberOfLoops++;
     }

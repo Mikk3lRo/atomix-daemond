@@ -14,6 +14,7 @@ putenv('isUnitTest=1');
 
 /**
  * @covers Mikk3lRo\atomix\daemond\Traits\SystemServiceTrait
+ * @covers Mikk3lRo\atomix\daemond\Traits\PeriodicActionsTrait
  * @covers Mikk3lRo\atomix\daemond\Traits\CliInvocationTrait
  * @covers Mikk3lRo\atomix\daemond\Traits\IpcInvocationTrait
  * @covers Mikk3lRo\atomix\daemond\DaemonAbstract
