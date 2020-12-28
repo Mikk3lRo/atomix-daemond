@@ -81,7 +81,9 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      *
      * @return void
      */
-    abstract protected function beforeLoop() : void;
+    protected function beforeLoop() : void
+    {
+    }
 
 
     /**
@@ -89,7 +91,9 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      *
      * @return void
      */
-    abstract protected function reload() : void;
+    protected function reload() : void
+    {
+    }
 
 
     /**
@@ -97,7 +101,9 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      *
      * @return void
      */
-    abstract protected function eternalLoop() : void;
+    protected function eternalLoop() : void
+    {
+    }
 
 
     /**
@@ -105,7 +111,9 @@ abstract class DaemonAbstract implements LoggerAwareInterface
      *
      * @return void
      */
-    abstract protected function deconstruct() : void;
+    protected function deconstruct() : void
+    {
+    }
 
 
     /**
